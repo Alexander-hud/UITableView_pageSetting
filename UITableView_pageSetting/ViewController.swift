@@ -9,15 +9,29 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    let idCell = "MyCell"
+    @IBOutlet weak var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.white
-        self.navigationItem.title = "Table"
-        self.navigationController?.navigationBar.prefersLargeTitles = true
+        tableView.dataSource = self
     }
 
 
 }
 
-
+extension ViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = UITableViewCell(style: .default, reuseIdentifier: idCell)
+        cell.textLabel?.text = "My text"
+        cell.imageView?.image = UIImage(named: "general")
+        return cell
+    }
+    
+    
+}
 
