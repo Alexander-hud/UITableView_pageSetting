@@ -19,6 +19,7 @@ class ViewController: UIViewController {
         self.tableView.backgroundColor = UIColor.lightGray
         self.tableView.sectionHeaderHeight = 10
     }
+  
 }
 
 struct Cell {
@@ -46,16 +47,8 @@ struct CellApiNetwork {
         return Network
     }
 }
-// MARK: Количество секций
-func numberOfSections(in tableView: UITableView) -> Int {
-    return 3
-}
 
-// MARK: Name section
-func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 
-   return " "
-}
 struct CellApiNotifications{
     static func getDataNotifications() -> [Cell] {
     let notifications = [Cell(title: "Уведомления"),
@@ -82,21 +75,38 @@ var allCellDataGeneral = CellApiGeneral.getDataGeneral()
 let allCell = [allCellDataNetwork, allCelldataNotifications, allCellDataGeneral]
 
 extension ViewController: UITableViewDelegate {
+    
     // MARK: клик на ячейку
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let title = allCell[indexPath.section][indexPath.row].title
-        print("Выбрана ячейка \(title ??  "")")
+        print("Выбрана ячейка: \(title ??  "")")
     }
+    
     // MARK: Количество секций
     func numberOfSections(in tableView: UITableView) -> Int {
         return 3
     }
     
-    // MARK: Name section
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    // MARK: Header and Footer sections
+    public func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let view = UIView()
+        view.backgroundColor = UIColor.lightGray
+        return view
+    }
     
-       return " "
+    public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 5
+    }
+    
+    public func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let view = UIView()
+        view.backgroundColor = UIColor.lightGray
+        return view
+    }
+    
+    public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 5
     }
     
 }
