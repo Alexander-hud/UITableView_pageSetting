@@ -8,40 +8,101 @@
 import UIKit
 
 class ViewController: UIViewController {
-    let idCell = "MyCell"
-    @IBOutlet weak var tableView: UITableView!
     
-    var items: [String] = ["we", "heart", "Swift"]
+    let identifier = "MyCell"
+    @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
+        tableView.delegate = self
         self.tableView.backgroundColor = UIColor.lightGray
         self.tableView.sectionHeaderHeight = 10
     }
-    
 }
 
 struct Cell {
     var title: String?
 }
 
-
-class CellApi {
-    static func getData() -> [[Cell]] {
-        let section1 = [Cell(title: "Авиарежим"),
+struct CellApiNetwork {
+    static func getNetworkTitle() -> [Cell] {
+        let Network = [Cell(title: "Авиарежим"),
                         Cell(title: "Wi-Fi"),
                         Cell(title: "Bluetooth"),
                         Cell(title: "Сотовая связь"),
                         Cell(title: "Режим модема"),
-                        Cell(title: "VPN")]
+                        Cell(title: "VPN"),
+                        
+                        Cell(title: "Уведомления"),
+                        Cell(title: "Звуки, тактиоьные сигналы"),
+                        Cell(title: "Не беспокоить"),
+                        Cell(title: "Экранное время"),
+                       
+                        Cell(title: "Основное"),
+                        Cell(title: "Пункт управления"),
+                        Cell(title: "Экран и яркость"),
+                        Cell(title: "Экран домой")]
+        return Network
+    }
+}
+// MARK: Количество секций
+func numberOfSections(in tableView: UITableView) -> Int {
+    return 3
+}
 
-        return [section1]
+// MARK: Name section
+func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+
+   return " "
+}
+struct CellApiNotifications{
+    static func getDataNotifications() -> [Cell] {
+    let notifications = [Cell(title: "Уведомления"),
+                        Cell(title: "Звуки, тактильные сигналы"),
+                        Cell(title: "Не беспокоить"),
+                        Cell(title: "Экранное время")]
+    return notifications
     }
 }
 
-var allCellData = CellApi.getData()
-extension ViewController: UITableViewDataSource {
+struct CellApiGeneral{
+    static func getDataGeneral() -> [Cell] {
+    let general = [Cell(title: "Основное"),
+                   Cell(title: "Пункт управления"),
+                   Cell(title: "Экран и яркость"),
+                   Cell(title: "Экран домой")]
+    return general
+    }
+}
+
+var allCellDataNetwork = CellApiNetwork.getNetworkTitle()
+var allCelldataNotifications = CellApiNotifications.getDataNotifications()
+var allCellDataGeneral = CellApiGeneral.getDataGeneral()
+let allCell = [allCellDataNetwork, allCelldataNotifications, allCellDataGeneral]
+
+extension ViewController: UITableViewDelegate {
+    // MARK: клик на ячейку
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let title = allCell[indexPath.section][indexPath.row].title
+        print("Выбрана ячейка \(title ??  "")")
+    }
+    // MARK: Количество секций
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 3
+    }
+    
+    // MARK: Name section
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    
+       return " "
+    }
+    
+}
+
+extension ViewController: UITableViewDataSource{
+    
     // MARK: Количество строк в секции
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
@@ -55,99 +116,70 @@ extension ViewController: UITableViewDataSource {
         }
     }
     
-    func label(width text: String) {
-        let _: UILabel = {
-         let n = UILabel()
-            n.textColor = UIColor.darkGray
-            n.textAlignment = .right
-            n.text = text
-            n.font = UIFont(name: "Montserrat", size: 12)
-         return n
-        }()
-    }
-    
-    
-    // MARK: клик на ячейку
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let title = allCellData[indexPath.section][indexPath.row].title
-        print("Выбрана ячейка \(title ??  "")")
-    }
-
     // MARK: настройка ячеек
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = UITableViewCell(style: UITableViewCell.CellStyle.value1, reuseIdentifier: idCell)
+
+        let cell = UITableViewCell(style: UITableViewCell.CellStyle.value1, reuseIdentifier: identifier)
         if(indexPath.section == 0){
-            
+
             if(indexPath.item == 0) {
-                cell.textLabel?.text = allCellData.first?[0].title
+                cell.textLabel?.text = allCellDataNetwork[0].title
                 cell.imageView?.image = UIImage(named: "airplane")
                 cell.accessoryView = UISwitch()
             } else if (indexPath.item == 1){
-                cell.textLabel?.text = allCellData.first?[1].title
+                cell.textLabel?.text = allCellDataNetwork[1].title
                 cell.imageView?.image = UIImage(named: "wifi")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.detailTextLabel?.text = "Не подключено"
             } else if (indexPath.item == 2){
-                cell.textLabel?.text = allCellData.first?[2].title
+                cell.textLabel?.text = allCellDataNetwork[2].title
                 cell.imageView?.image = UIImage(named: "bl")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
                 cell.detailTextLabel?.text = "Вкл."
             } else if (indexPath.item == 3){
-                cell.textLabel?.text = allCellData.first?[3].title
+                cell.textLabel?.text = allCellDataNetwork[3].title
                 cell.imageView?.image = UIImage(named: "antenna")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
             } else if (indexPath.item == 4){
-                cell.textLabel?.text = allCellData.first?[4].title
+                cell.textLabel?.text = allCellDataNetwork[4].title
                 cell.imageView?.image = UIImage(named: "modem")
                 cell.accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
             } else if (indexPath.item == 5){
-                cell.textLabel?.text = allCellData.first?[5].title
+                cell.textLabel?.text = allCellDataNetwork[5].title
                 cell.imageView?.image = UIImage(named: "vpn")
                 cell.accessoryView = UISwitch()
             }
         } else  if(indexPath.section == 1){
             if(indexPath.item == 0) {
-                cell.textLabel?.text = "Уведомления"
-                cell.imageView?.image = UIImage(named: "general")
-                
+                cell.textLabel?.text = allCelldataNotifications[0].title
+                cell.imageView?.image = UIImage(named: "Notifications")
             } else if (indexPath.item == 1){
-                cell.textLabel?.text = "Звуки, тактильные сигналы"
-                cell.imageView?.image = UIImage(named: "general")
+                cell.textLabel?.text = allCelldataNotifications[1].title
+                cell.imageView?.image = UIImage(named: "sounds")
             } else if (indexPath.item == 2){
-                cell.textLabel?.text = "Не беспокоить"
-                cell.imageView?.image = UIImage(named: "general")
+                cell.textLabel?.text = allCelldataNotifications[2].title
+                cell.imageView?.image = UIImage(named: "moon")
             } else if (indexPath.item == 3){
-                cell.textLabel?.text = "Экранное время"
-                cell.imageView?.image = UIImage(named: "general")
+                cell.textLabel?.text = allCelldataNotifications[3].title
+                cell.imageView?.image = UIImage(named: "time")
             }
         } else  if(indexPath.section == 2){
             if(indexPath.item == 0) {
-                cell.textLabel?.text = "Основное"
+                cell.textLabel?.text = allCellDataGeneral[0].title
                 cell.imageView?.image = UIImage(named: "general")
             } else if (indexPath.item == 1){
-                cell.textLabel?.text = "Пункт управления"
-                cell.imageView?.image = UIImage(named: "general")
+                cell.textLabel?.text = allCellDataGeneral[1].title
+                cell.imageView?.image = UIImage(named: "switch")
             } else if (indexPath.item == 2){
-                cell.textLabel?.text = "Экран и яркость"
-                cell.imageView?.image = UIImage(named: "general")
+                cell.textLabel?.text = allCellDataGeneral[2].title
+                cell.imageView?.image = UIImage(named: "brightness")
             } else if (indexPath.item == 3){
-                cell.textLabel?.text = "Экран домой"
-                cell.imageView?.image = UIImage(named: "general")
+                cell.textLabel?.text = allCellDataGeneral[3].title
+                cell.imageView?.image = UIImage(named: "house")
             }
         }
         return cell
     }
-    // MARK: Количество секций
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
-    }
-    
-    // MARK: Name section
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        
-       return " "
-    }
+   
 }
 
